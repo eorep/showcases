@@ -7,11 +7,11 @@ output: html_document
 ---
 ## Executive Summary
 
-In this report I aim to show the 53 locations where pedestrians in the city of Montreal can use the streets as sidewalks. The data was obtained from the open dataset initiative of the city of Montreal.
+In this report I aim to show the 53 locations where pedestrians in the city of Montreal can use the streets as sidewalks. The data was obtained from the open dataset initiative of the city of Montreal (see References).
 
 ## Getting the data
 
-I downloaded the data from the open dataset of the city of Montreal (see references).
+I downloaded the data from the open dataset of the city of Montreal (see References).
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE, results='hide', cache=TRUE}
 
@@ -38,7 +38,7 @@ data <- read.csv("data/montreal_pedestrian_streets.csv", header = TRUE)
 # Create the field color.
 data <- data %>%
   mutate(photo2 = ifelse(!grepl('\\n', PHOTO), as.character(PHOTO), substring(PHOTO, 1, regexpr("\\n", PHOTO)-1))) %>%
-  mutate(url = ifelse(photo2 != "", paste0("<a href='",photo2,"'>",TOPONYME,"</a>"), as.character(TOPONYME))) %>%
+  mutate(url = ifelse(photo2 != "", paste0("<a href='",photo2,"' target=\"_blank\">",TOPONYME,"</a>"), as.character(TOPONYME))) %>%
   mutate(color = MODE_IMPLANTATION)
 
 # Format the implantation mode and the colors to have three categories.
