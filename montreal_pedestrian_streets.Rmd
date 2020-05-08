@@ -1,0 +1,88 @@
+---
+title: "There are 53 locations where pedestrians can walk on the streets of Montreal"
+subtitle: "Source: Open datasets from the city of Montreal."
+author: "Elmer Ore"
+date: "08/05/2020"
+output: html_document
+---
+## Executive Summary
+
+In this report I aim to show the 53 locations where pedestrians in the city of Montreal can use the streets as sidewalks. The data was obtained from the open dataset initiative of the city of Montreal.
+
+## Getting the data
+
+I downloaded the data from the open dataset of the city of Montreal (see references).
+
+```{r setup, echo=TRUE, message=FALSE, warning=FALSE, results='hide', cache=TRUE}
+
+# Download the dataset from source.
+download.file("http://donnees.ville.montreal.qc.ca/dataset/1e153f9f-3930-4133-8d35-ade2e8f7e7e3/resource/ef2a8162-0644-47e7-bd03-bea33f14a5d2/download/projetpietonnisation2017.csv", "data/montreal_pedestrian_streets.csv")
+
+```
+
+## Data Cleaning
+
+In terms of preparing the data to be able to display it in a map:
+
+- There is a column photos with sometimes multiple URLs, I picked the first one to only have one link per place.
+- Generated a url field that contains the link to the photo when available.
+- Created a color field to match the implantation mode (permanent, temporary or seasonal setting).
+
+```{r message=FALSE, results='hide', warning=FALSE}
+library(dplyr)
+
+data <- read.csv("data/montreal_pedestrian_streets.csv", header = TRUE)
+
+# Choose only one photo if multiple photos are available.
+# Create the url field in case there is a link available.
+# Create the field color.
+data <- data %>%
+  mutate(photo2 = ifelse(!grepl('\\n', PHOTO), as.character(PHOTO), substring(PHOTO, 1, regexpr("\\n", PHOTO)-1))) %>%
+  mutate(url = ifelse(photo2 != "", paste0("<a href='",photo2,"'>",TOPONYME,"</a>"), as.character(TOPONYME))) %>%
+  mutate(color = MODE_IMPLANTATION)
+
+# Format the implantation mode and the colors to have three categories.
+levels(data$MODE_IMPLANTATION) <- c("Permanent", "Temporary", "Temporary", "Seasonal" )
+levels(data$color) <- c("forestgreen", "red", "red", "dodgerblue")
+
+```
+
+## Map
+
+The following is a map of the city of Montreal with the locations of the street areas available for pedestrians. 
+
+- The color of the circles indicate the type of location: permanent, temporary or seasonal. There is a legend on the top right that indicate the different types.
+- The size of the circles represent the related size of each location.
+- Clicking on each circle will open a pop up that indicate the name of the location. 
+- In case a link is available, the name of the location will become a link.  Please note that in some cases the links are returning an error (not found in the server). 
+
+
+```{r message=FALSE, echo=TRUE, warning=FALSE, fig.height = 6, fig.width = 9} 
+library(leaflet)
+
+data %>%
+  leaflet() %>%
+  addTiles() %>%
+  setView(lat = 45.5017, lng = -73.5673, zoom = 11) %>%  #locate the map to the center of Montreal.
+  addCircleMarkers(lng=~LONGITUDE, 
+                   lat=~LATITUDE, 
+                   popup=~url,
+                   radius = ~LONGUEUR_TRONCON/10,
+                   weight=2,
+                   col = ~color,
+                   clusterOptions = markerClusterOptions()) %>%
+  addLegend(labels=c("Permanent", "Temporary", "Seasonal"), colors=c("forestgreen", "red", "dodgerblue"))
+
+```
+
+
+## Conclusions
+
+The map shows the 53 locations where pedestrians in Montreal can walk in the street by type (permanent, temporary or seasonal location) and relative size. In case where the information is available, a photo of the location can be accessed by clicking in the respective circle and the link inside. 
+
+## References
+
+- The data used for this project comes from <http://donnees.ville.montreal.qc.ca/dataset/rues-pietonnes> (in French).
+- The dataset was last updated on February 2nd. 2020.
+- Packaged used: leaflet, dplyr.
+- Document created on May 8th, 2020.
