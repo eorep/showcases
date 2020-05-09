@@ -25,8 +25,8 @@ download.file("http://donnees.ville.montreal.qc.ca/dataset/1e153f9f-3930-4133-8d
 In terms of preparing the data to be able to display it in a map:
 
 - There is a column photos with sometimes multiple URLs, I picked the first one to only have one link per place.
-- Generated a url field that contains the link to the photo when available.
-- Created a color field to match the implantation mode (permanent, temporary or seasonal setting).
+- I generated a url field that contains the link to the photo when available.
+- I created a color field to match the implantation mode (permanent, temporary or seasonal setting).
 
 ```{r message=FALSE, results='hide', warning=FALSE}
 library(dplyr)
@@ -51,10 +51,10 @@ levels(data$color) <- c("forestgreen", "red", "red", "dodgerblue")
 
 The following is a map of the city of Montreal with the locations of the street areas available for pedestrians. 
 
-- The color of the circles indicate the type of location: permanent, temporary or seasonal. There is a legend on the top right that indicate the different types.
-- The size of the circles represent the related size of each location.
-- Clicking on each circle will open a pop up that indicate the name of the location. 
-- In case a link is available, the name of the location will become a link.  Please note that in some cases the links are returning an error (not found in the server). 
+- The color of the circles indicates the type of location: permanent, temporary or seasonal. There is a legend on the top right that indicates the different types.
+- The size of the circles represents the related size of each location.
+- Clicking on each circle will open a pop up that indicates the name of the location. 
+- In case a link is available, the name of the location will become a link.  Please note that some links are not loading the image since there were removed from the server. 
 
 
 ```{r message=FALSE, echo=TRUE, warning=FALSE, fig.height = 6, fig.width = 9} 
@@ -78,11 +78,11 @@ data %>%
 
 ## Conclusions
 
-The map shows the 53 locations where pedestrians in Montreal can walk in the street by type (permanent, temporary or seasonal location) and relative size. In case where the information is available, a photo of the location can be accessed by clicking in the respective circle and the link inside. 
+The map shows the 53 locations where pedestrians in Montreal can walk in the street by type (permanent, temporary or seasonal location) and relative size. When the information is available, a photo of the location can be accessed by clicking in the respective circle and the link inside. 
 
 ## References
 
 - The data used for this project comes from <http://donnees.ville.montreal.qc.ca/dataset/rues-pietonnes> (in French).
 - The dataset was last updated on February 2nd. 2020.
 - Packaged used: leaflet, dplyr.
-- Document created on May 8th, 2020.
+- Document last updated on May 9th, 2020.
