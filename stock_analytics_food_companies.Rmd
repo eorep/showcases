@@ -1,0 +1,247 @@
+---
+title: "Stock analysis of top food & beverage companies"
+author: "Elmer Ore"
+date: "27/05/2020"
+output: 
+  ioslides_presentation:
+    css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 2019 Top Food companies {.contents}
+
+According to [Food Engineering Magazine](https://www.foodengineeringmag.com/2019-top-100-food-beverage-companies>), these are the top 5 Food and Beverage companies in the world:
+
+```{r echo = FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+companies <- data.frame(Company = c("Nestle", "Pepsico, Inc", "Anheuser-Busch InBev", "JBS", "Tyson Foods"),
+                        food_sales = c(80195, 64661, 54619, 46790, 40052))
+
+table <- companies %>%
+  mutate(sales =  paste0('$',format(food_sales, format='f', big.mark = ',', 
+                                                digits = 0, nsmall=0, scientific = FALSE))) %>%
+  select (-food_sales)
+  
+
+table %>%
+  kable(col.names=c("Company", "Food Sales")) %>%
+  kable_styling() %>%
+   footnote(general = "Food sales are listed in millions of US dollars.")
+
+```
+
+## Adjusted Price series {.contents}
+
+```{r echo = FALSE, message=FALSE, warning=FALSE, results='hide', cache=TRUE}
+library(quantmod)
+library(dplyr)
+library(tidyr)
+
+# Getting stock numbers from Yahoo Finance.
+symbols <- c("NSRGY", "PEP", "BUD", "JBSAY", "TSN")
+getSymbols(symbols, src = "yahoo", from = "2016-01-01", to = "2020-05-25", auto.assign = TRUE)
+
+dfNSRGY <- as.data.frame(NSRGY) %>%
+  rename (price = tail(names(.),1)) %>%
+  mutate(date=time(NSRGY), index="Nestle") %>%
+  select(index, price, date)
+
+dfPEP <- as.data.frame(PEP) %>%
+  rename (price = tail(names(.),1)) %>%
+  mutate(date=time(PEP), index="Pepsico") %>%
+  select(index, price, date)
+
+dfBUD <- as.data.frame(BUD) %>%
+  rename (price = tail(names(.),1)) %>%
+  mutate(date=time(BUD), index="Anheuser-Busch Inbev") %>%
+  select(index, price, date)
+
+dfJBSAY <- as.data.frame(JBSAY) %>%
+  rename (price = tail(names(.),1)) %>%
+  mutate(date=time(JBSAY), index="JBS") %>%
+  select(index, price, date)
+
+dfTSN <- as.data.frame(TSN) %>%
+  rename (price = tail(names(.),1)) %>%
+  mutate(date=time(TSN), index="Tyson Foods") %>%
+  select(index, price, date)
+
+#combining the data from all 5 companies in one dataset.
+data <- bind_rows(dfNSRGY, dfPEP, dfBUD, dfJBSAY, dfTSN)
+
+```
+
+```{r echo = FALSE, message=FALSE, warning=FALSE, out.width="100%", out.height="100%"}
+library(dplyr)
+library(tidyr)
+library(plotly)
+
+pal <- c("#cccccc", "#969696", "red", "#636363", "#252525")
+pal <- setNames(pal, c("Nestle", "Pepsico", "Anheuser-Busch Inbev", "JBS", "Tyson Foods"))
+
+fig1 <- plot_ly(data, type="scatter", mode="markers",
+        x=~date, y=~price, color=~index,
+        colors =  pal, 
+        marker = list(size = 4))#,
+       # width = 800,
+        #height = 500)
+
+fig1 <- fig1 %>%  
+  layout(title= "Adjusted stock price of top food and beverage brands",
+         font = list(
+           family = "Montserrat, sans-serif",
+           size = 20),
+         yaxis = list(zeroline = FALSE, 
+                      tickprefix="Price ", 
+                      showtickprefix = 'last',
+                      title = "",
+                      font = list(
+                        family = "Montserrat, sans-serif",
+                        size = 14)),
+         xaxis = list(zeroline = FALSE),
+         showlegend = FALSE,
+         margin = 1
+         )
+
+lblNestle <- list(
+  xref = 'paper',
+  x = 0.95,
+  y = dfNSRGY[nrow(dfNSRGY),2],  #price
+  xanchor = 'left',
+  yanchor = 'middle',
+  text = 'Nestle',
+  font = list(color = "#cccccc"), #'rgba(67,67,67,1)'),
+  showarrow = FALSE)
+
+lblPepsico <- lblNestle
+lblPepsico$y <- dfPEP[nrow(dfPEP),2]
+lblPepsico$text <- "Pepsico"
+lblPepsico$font$color <- "#969696"
+
+lblAnheuser <- lblPepsico
+lblAnheuser$y <- dfBUD[nrow(dfBUD),2]
+lblAnheuser$text <- "Anheuser-Busch Inbev"
+lblAnheuser$font$color <- "red"
+
+lblJBS <- lblPepsico
+lblJBS$y <- dfJBSAY[nrow(dfJBSAY),2]
+lblJBS$text <- "JBS"
+lblJBS$font$color <- "#636363"
+
+lblTyson <- lblPepsico
+lblTyson$y <- dfTSN[nrow(dfTSN),2]
+lblTyson$text <- "Tyson Foods"
+lblTyson$font$color <- "#252525"
+
+fig1 <- fig1 %>% 
+  layout(annotations = lblNestle) %>%
+  layout(annotations = lblPepsico) %>%
+  layout(annotations = lblAnheuser) %>%
+  layout(annotations = lblJBS) %>%
+  layout(annotations = lblTyson)
+  
+fig1
+```
+
+## Trends from Anheuser-Busch Inbev prices {.contents}
+
+```{r echo = FALSE, message=FALSE, warning=FALSE, out.width="100%", out.height="100%"}
+library(dplyr)
+library(zoo)
+library(plotly)
+
+# calculating moving averages
+dfBUD_mm <- filter(dfBUD, date >= "2019-01-01") %>% select (-index)
+
+dfBUD_mm <- dfBUD_mm %>%
+  mutate(mm10 = rollmean(dfBUD_mm$price, 10, fill = list(NA, NULL, NA), align = "right")) %>%
+  mutate(mm30 = rollmean(dfBUD_mm$price, 30, fill = list(NA, NULL, NA), align = "right"))
+
+pal2 <- c("#969696", "firebrick4", "darkcyan")
+pal2 <- setNames(pal2, c("price", "mm10", "mm30"))
+
+fig2 <- plot_ly(dfBUD_mm, type="scatter", mode="lines",
+                x=~date, y=~price,
+                name="price",
+                colors = pal2, 
+                color= "price",
+                height = 500)
+
+fig2 <- fig2 %>% 
+  add_trace(y = ~mm10, name = '10 days', color="mm10") %>%
+  add_trace(y = ~mm30, name = '30 days', color="mm30")
+
+fig2 <- fig2 %>%  
+  layout(title= "Moving averages of Anheuser-Busch's adjusted price",
+         font = list(
+           family = "Montserrat, sans-serif",
+           size = 20), 
+         yaxis = list(zeroline = FALSE, 
+                      tickprefix="Price ", 
+                      showtickprefix = 'last',
+                      title = "",
+                      font = list(
+                        family = "Montserrat, sans-serif",
+                        size = 14)),
+         xaxis = list(zeroline = FALSE),
+         margin = 10
+  )
+
+fig2
+```
+
+
+## Returns from Anheuser-Busch Inbev {.contents}
+
+```{r echo = FALSE, message=FALSE, warning=FALSE, out.width="100%", out.height="100%"}
+library(dplyr)
+library(plotly)
+
+# calculating returns
+dfBUD_ret <- as.data.frame(diff(log(dfBUD$price)) )
+dfBUD_ret <- mutate(dfBUD_ret, returns=diff(log(dfBUD$price))) %>% select(returns)
+dfBUD_ret <- bind_rows(data.frame(returns=NA), dfBUD_ret)
+dfBUD_ret <- bind_cols(dfBUD, returns = dfBUD_ret)
+
+fig3 <- plot_ly(dfBUD_ret, type="scatter", mode="lines",
+                x=~date, y=~returns,
+                height = 500)
+
+fig3 <- fig3 %>%  
+  layout(title= "Anheuser-Busch's return series",
+         font = list(
+           family = "Montserrat, sans-serif",
+           size = 20), 
+         yaxis = list(zeroline = FALSE, 
+                      tickprefix="Returns ", 
+                      showtickprefix = 'last',
+                      title = "",
+                      font = list(
+                        family = "Montserrat, sans-serif",
+                        size = 14)),
+         xaxis = list(zeroline = FALSE),
+         margin = 10
+  )
+
+fig3
+```
+
+
+## Summary {.contents}
+
+- Anheuser-Busch InBev adjusted stock prices have the worst decreased in value between 2016 until May 2020 between the top 5 companies in the ranking.
+- Using smooth series we can see that there are 8 times where the series crossed themselves and 2 overlaps. These are moments where an evaluation of buy or sell stocks should be considered.
+- The returns of Anheuser-Busch InBev shows increased volatility since March 2020, when the coronavirus epidemic became global.
+
+## References {.contents}
+
+- [Food Engineering Magazine](https://www.foodengineeringmag.com/2019-top-100-food-beverage-companies>) 2019 Top 100 Food & Beverage Companies.
+- [Introduction to stock analysys in R](https://lamfo-unb.github.io/2017/07/22/intro-stock-analysis-1/) by Gustavo Monteiro
+- [R Figure reference](https://plotly.com/r/reference/) from Plotly.
+- [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, Garrett Grolemund. 
