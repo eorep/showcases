@@ -1,0 +1,54 @@
+---
+title: "Credit Score Demo"
+subtitle: "[Link to access the application](https://eore.shinyapps.io/credit_score_demo/)"
+author: "Elmer Ore"
+date: "04/08/2020"
+output: 
+  ioslides_presentation:
+    css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+      $('slide:not(.title-slide, .backdrop, .segue)').append('<footer label=\"Written by Elmer Ore\"></footer>');    
+    })
+</script>
+
+
+## Credit score demo {.contents}
+
+I built an application to demonstrate the use of Machine learning and Shinny apps.
+It is about a credit application.  
+
+Some of the data used in the model:
+
+```{r echo = FALSE, message=FALSE, warning=FALSE, out.width="75%", out.height="75%"}
+library(ggplot2)
+
+load(file = "data/press.rda")
+
+ggplot( data=press, aes(MARRIAGE, LIMIT_BAL)) +
+          geom_boxplot(varwidth = TRUE, fill = "white", colour = "blue", outlier.alpha = 0.1 ) +
+  ggtitle("Distribution of credit by marital status") + 
+  xlab("Marital status") +
+  ylab("Credit amount")
+
+```
+
+
+## How to use the application {.contents}
+![](images/instructions.png){#id .class width=85% height=85%}
+
+
+## Form to complete the evaluation {.contents}
+![](images/form.png){#id .class width=85% height=85%}
+
+## Result examples {.contents}
+![](images/resultpositive.png){#id .class width=100% height=100%}
+![](images/resultnegative.png){#id .class width=100% height=100%}

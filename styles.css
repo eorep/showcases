@@ -27,6 +27,15 @@ table, th, td{
 .contents {
     margin-top: 5px;
 }
+footer:after {
+    content: attr(label);
+    font-size: 12pt;
+    position: absolute;
+    bottom: 20px;
+    left: 60px;
+    line-height: 1.9;
+}
+
 
 
 
