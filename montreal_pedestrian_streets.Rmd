@@ -2,7 +2,7 @@
 title: "There are 53 locations where pedestrians can walk on the streets of Montreal"
 subtitle: "Source: Open datasets from the city of Montreal."
 author: "Elmer Ore"
-date: "08/05/2020"
+date: "Aug 16th, 2020"
 output: html_document
 ---
 ## Executive Summary
@@ -85,4 +85,4 @@ The map shows the 53 locations where pedestrians in Montreal can walk in the str
 - The data used for this project comes from <http://donnees.ville.montreal.qc.ca/dataset/rues-pietonnes> (in French).
 - The dataset was last updated on February 2nd. 2020.
 - Packaged used: leaflet, dplyr.
-- Document last updated on May 9th, 2020.
+- Document last updated on Aug 16th, 2020.
