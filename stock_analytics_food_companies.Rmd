@@ -1,7 +1,7 @@
 ---
 title: "Stock analysis of top food & beverage companies"
 author: "Elmer Ore"
-date: "27/05/2020"
+date: "Aug 17th, 2020"
 output: 
   ioslides_presentation:
     css: styles.css
