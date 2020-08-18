@@ -1,6 +1,6 @@
 ---
 title: "Credit Score Demo"
-subtitle: "[Link to access the application](https://eore.shinyapps.io/credit_score_demo/)"
+subtitle: "[Link to access the application](https://eore.shinyapps.io/credit_score_demo/) <br/> [Link to access the source code](https://github.com/eorep/developingdataproducts)"
 author: "Elmer Ore"
 date: "Aug 18th, 2020"
 output: 
