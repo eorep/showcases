@@ -16,7 +16,7 @@ output: html_document
 
 Some of the analysis and projects I worked on. 
 
-### Modelling
+### Modeling
 
 1. Prediction Modeling demo: Predict the worthiness of credit applicants in a financial institution.  [Link to the presentation](https://eorep.github.io/showcases/credit_score_presentation.html), and the [Shiny application](https://eore.shinyapps.io/credit_score_demo/).  Models tested: Generalized linear model, random forest and neural networks. Using: **caret, recipes, ggplot2, dplyr, readxl, parallel, doParallel, shiny and shinythemes**.  
 ![](images/form.png){#id .class width=50% height=50%}
