@@ -1,6 +1,6 @@
 ---
 title: "Portfolio"
-author: "Elmer Ore"
+author: "<a href='https://www.linkedin.com/in/elmerore'>Elmer Ore</a>"   
 date: "Nov 28th, 2020"
 output: html_document
 ---
