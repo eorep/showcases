@@ -1,7 +1,6 @@
 ---
 title: "Portfolio"
 author: "<a href='https://www.linkedin.com/in/elmerore'>Elmer Ore</a>"   
-date: "Nov 28th, 2020"
 output: html_document
 ---
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
@@ -14,7 +13,7 @@ output: html_document
     })
 </script>
 
-Some of the analysis and projects I worked on. 
+Some of the projects I worked on. 
 
 ### Modeling
 
@@ -35,6 +34,8 @@ Some of the analysis and projects I worked on.
 
 ### Data Analysis
 
+1. Automated reports used to analyze the results of different A/B tests launched in parallel with multiple markets.<br />Tools: **BigQuery, R Markdown, Jquery**. 
+     
 1. Descriptive analysis of the storms recorded by the U.S. National Oceanic and Atmospheric Administration’s (NOAA) from 1950 to 2011. [Report and source code of the analysis done.](https://rpubs.com/eore/coursera-reproducible-research-project2) <br />Tools: **dplyr, ggplot2, maps**. 
     ![](images/flood.png){#id .class width=80% height=80%}
 1. Locations where [pedestrians can walk on the streets of Montreal](https://eorep.github.io/showcases/montreal_pedestrian_streets.html) with an interactive map using an open dataset from the city of Montreal. <br />Using **Leaflet**
@@ -45,12 +46,9 @@ Some of the analysis and projects I worked on.
 1. Introductory [stock analysis for Top Food & Beverage companies](https://eorep.github.io/showcases/stock_analytics_food_companies.html) <br />Using **R Markdown and Plotly**.
 
     ![](images/stocks.png){#id .class width=50% height=50%}
-
-### Others
-
 1. Data manipulation and visualization of a [personal activity monitoring device](https://github.com/eorep/RepData_PeerAssessment1/blob/master/PA1_template.md). <br />Using **dplyr and ggplot2**.
 
     ![](images/steps.png){#id .class width=50% height=50%}
 
 
-
+<br />Last Updated: November 2020.
